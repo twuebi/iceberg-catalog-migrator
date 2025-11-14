@@ -33,6 +33,7 @@ dependencies {
   implementation(libs.guava)
   implementation(libs.slf4j)
   runtimeOnly(libs.logback.classic)
+  runtimeOnly(libs.dnsjava)
   implementation(libs.picocli)
   implementation(libs.iceberg.spark.runtime)
   implementation(libs.hadoop.aws) { exclude("com.amazonaws", "aws-java-sdk-bundle") }
@@ -147,6 +148,11 @@ val mainClassName = "org.projectnessie.tools.catalog.migration.cli.CatalogMigrat
 
 val shadowJar = tasks.named<ShadowJar>("shadowJar") { isZip64 = true }
 
-shadowJar { manifest { attributes["Main-Class"] = mainClassName } }
+shadowJar {
+  manifest {
+    attributes["Main-Class"] = mainClassName
+    attributes["Multi-Release"] = "true"
+  }
+}
 
 tasks.withType<Test>().configureEach { systemProperty("java.security.manager", "allow") }

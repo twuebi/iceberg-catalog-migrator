@@ -111,6 +111,18 @@ Identifier options:
 Note: Options for register command is exactly same as migrate command.
 
 # Sample Inputs
+
+## Bulk registering all the tables from Hive to AIStor Tables catalog
+Make sure to first upgrade the hive bucket to a AIStor Tables bucket by creating a new warehouse with the same name while supplying the "upgrade-existing" flag.
+
+```shell
+AWS_REGION=us-east-1 java -jar cli/build/libs/iceberg-catalog-migrator-cli-0.3.1-SNAPSHOT.jar register --source-catalog-type HIVE \
+--source-catalog-properties warehouse=s3a://hive,io-impl=org.apache.iceberg.aws.s3.S3FileIO,uri=thrift://localhost:9083,s3.access-key-id=minioadmin,s3.secret-access-key=minioadmin,s3.endpoint=http://localhost:9000,s3.region=dummy,client.region=dummy,client.endpoint=http://localhost:9000,s3.path-style-access=true \
+--target-catalog-type REST \
+--target-catalog-properties warehouse=hive,uri=http://localhost:9000/_iceberg/,rest.access-key-id=minioadmin,rest.secret-access-key=minioadmin,rest.sigv4-enabled=true,rest.signing-name=s3tables,rest.signing-region=dummy,s3.access-key-id=minioadmin,s3.secret-access-key=minioadmin,s3.region=dummy,s3.path-style-access=true \
+--stacktrace
+```
+
 ## Bulk registering all the tables from Hadoop catalog to Nessie catalog (main branch)
 ```shell
 java -jar iceberg-catalog-migrator-cli-0.3.0.jar register \
